@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Web - Little App</string>
+
+    //Theme
+    <string name="basic_theme">Basic Theme</string>
+    <string name="sec_theme">Sec Theme</string>
+
+    <string name="web_app">Web App</string>
+    <string name="support">Support</string>
+    <string name="about_us">About Us</string>
+    <string name="web_site">WebSite</string>
+    <string name="rate_app">Rate App</string>
+    <string name="share_app">Share App</string>
 </resources>
