@@ -7,175 +7,140 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.littleapp.web.Unit.CLASS
 import com.littleapp.web.Unit.VOID
 import com.littleapp.web.R
 import com.littleapp.web.Unit.DATA
 import com.littleapp.web.Unit.THEME
 import com.littleapp.web.databinding.ActivityMainBinding
+import com.littleapp.web.databinding.ItemWebCardBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private var binding: ActivityMainBinding? = null
-    private val context: Context = this@MainActivity
-    var alertDialog: AlertDialog? = null
+    private lateinit var binding: ActivityMainBinding
+    private val context: Context = this
+    private var alertDialog: AlertDialog? = null
+
+    private val callPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(applicationContext, "Permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(applicationContext, "Permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        val view = binding!!.root
-        setContentView(view)
+        setContentView(binding.root)
 
-        binding!!.toolbar.nameSpace.setText(R.string.web_app)
-        if (ActivityCompat.checkSelfPermission(
-                this@MainActivity, Manifest.permission.CALL_PHONE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this@MainActivity, arrayOf(Manifest.permission.CALL_PHONE), 1
-            )
-        }
-        binding!!.webSite.setOnClickListener {
-            VOID.IntentExtra(
-                context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.WEBSITE
-            )
-        }
-        binding!!.instagram.setOnClickListener {
-            VOID.IntentExtra(
-                context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.INSTAGRAM
-            )
-        }
-        binding!!.twitter.setOnClickListener {
-            VOID.IntentExtra(
-                context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.TWITTER
-            )
-        }
-        binding!!.facebook.setOnClickListener {
-            VOID.IntentExtra(
-                context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.FACEBOOK
-            )
-        }
-        binding!!.aboutUs.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(context)
-            val dialogView = LayoutInflater.from(context).inflate(R.layout.item_web_card, null)
-            dialogBuilder.setView(dialogView)
-            val about_app = dialogView.findViewById<RelativeLayout>(R.id.about_app)
-            about_app.visibility = View.VISIBLE
-            val contact = dialogView.findViewById<RelativeLayout>(R.id.contact)
-            contact.visibility = View.GONE
-            val about_us = dialogView.findViewById<TextView>(R.id.about_us)
-            val close = dialogView.findViewById<TextView>(R.id.close)
+        binding.toolbar.nameSpace.setText(R.string.web_app)
 
-            alertDialog = dialogBuilder.create()
-            close.setOnClickListener { alertDialog!!.dismiss() }
-            about_us.visibility = View.VISIBLE
-            about_us.text = DATA.aboutUs
-            alertDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alertDialog!!.show()
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            callPermissionLauncher.launch(Manifest.permission.CALL_PHONE)
         }
-        binding!!.support.setOnClickListener {
-            val dialogBuilder = AlertDialog.Builder(context)
-            val dialogView = LayoutInflater.from(context).inflate(R.layout.item_web_card, null)
-            dialogBuilder.setView(dialogView)
-            val about_app = dialogView.findViewById<RelativeLayout>(R.id.about_app)
-            about_app.visibility = View.GONE
-            val contact = dialogView.findViewById<RelativeLayout>(R.id.contact)
-            contact.visibility = View.VISIBLE
-            val about_us = dialogView.findViewById<TextView>(R.id.about_us)
-            about_us.visibility = View.GONE
-            val email = dialogView.findViewById<ImageView>(R.id.email)
-            val phone = dialogView.findViewById<ImageView>(R.id.phone)
-            alertDialog = dialogBuilder.create()
-            val close = dialogView.findViewById<TextView>(R.id.close)
 
-            close.setOnClickListener { alertDialog!!.dismiss() }
-            alertDialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            email.setOnClickListener {
-                val emailSelectorIntent = Intent(Intent.ACTION_SENDTO)
-                emailSelectorIntent.data = Uri.parse("mailto:")
-                val emailIntent = Intent(Intent.ACTION_SEND)
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(DATA.myEmail))
-                emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                emailIntent.selector = emailSelectorIntent
-                startActivity(emailIntent)
+        binding.webSite.setOnClickListener {
+            VOID.IntentExtra(context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.WEBSITE)
+        }
+        binding.instagram.setOnClickListener {
+            VOID.IntentExtra(context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.INSTAGRAM)
+        }
+        binding.twitter.setOnClickListener {
+            VOID.IntentExtra(context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.TWITTER)
+        }
+        binding.facebook.setOnClickListener {
+            VOID.IntentExtra(context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.FACEBOOK)
+        }
+
+        binding.aboutUs.setOnClickListener {
+            val dialogBinding = ItemWebCardBinding.inflate(layoutInflater)
+            val dialogBuilder = AlertDialog.Builder(context).setView(dialogBinding.root)
+
+            dialogBinding.aboutApp.visibility = View.VISIBLE
+            dialogBinding.contact.visibility = View.GONE
+            dialogBinding.aboutUs.visibility = View.VISIBLE
+            dialogBinding.aboutUs.text = DATA.aboutUs
+
+            alertDialog = dialogBuilder.create().apply {
+                dialogBinding.close.setOnClickListener { dismiss() }
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                show()
             }
-            phone.setOnClickListener {
-                val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:" + DATA.myMobileNumber)
-                startActivity(callIntent)
+        }
+
+        binding.support.setOnClickListener {
+            val dialogBinding = ItemWebCardBinding.inflate(layoutInflater)
+            val dialogBuilder = AlertDialog.Builder(context).setView(dialogBinding.root)
+
+            dialogBinding.aboutApp.visibility = View.GONE
+            dialogBinding.contact.visibility = View.VISIBLE
+            dialogBinding.aboutUs.visibility = View.GONE
+
+            alertDialog = dialogBuilder.create().apply {
+                dialogBinding.close.setOnClickListener { dismiss() }
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                dialogBinding.email.setOnClickListener {
+                    val emailSelectorIntent = Intent(Intent.ACTION_SENDTO).apply {
+                        data = "mailto:".toUri()
+                    }
+                    Intent(Intent.ACTION_SEND).apply {
+                        putExtra(Intent.EXTRA_EMAIL, arrayOf(DATA.myEmail))
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                        selector = emailSelectorIntent
+                        startActivity(this)
+                    }
+                }
+
+                dialogBinding.phone.setOnClickListener {
+                    Intent(Intent.ACTION_CALL).apply {
+                        data = "tel:${DATA.myMobileNumber}".toUri()
+                        startActivity(this)
+                    }
+                }
+                show()
             }
-            alertDialog!!.show()
         }
-        binding!!.shareApp.setOnClickListener {
-            val share = Intent(Intent.ACTION_SEND)
-            share.type = "text/plain"
-            share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-            share.putExtra(
-                Intent.EXTRA_TEXT, """
-     Share App with
-     https://play.google.com/store/apps/details?id=${context.packageName}
-     """.trimIndent()
-            )
-            startActivity(Intent.createChooser(share, "Share link!"))
+
+        binding.shareApp.setOnClickListener {
+            Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+                putExtra(Intent.EXTRA_TEXT, "Share App with\nhttps://play.google.com/store/apps/details?id=${context.packageName}")
+                startActivity(Intent.createChooser(this, "Share link!"))
+            }
         }
-        binding!!.rateApp.setOnClickListener {
-            val uri = Uri.parse("market://details?id=" + context.packageName)
-            val goToMarket = Intent(Intent.ACTION_VIEW, uri)
-            goToMarket.addFlags(
-                Intent.FLAG_ACTIVITY_NO_HISTORY or
-                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
-                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-            )
+
+        binding.rateApp.setOnClickListener {
+            val marketUri = "market://details?id=${context.packageName}".toUri()
+            val goToMarket = Intent(Intent.ACTION_VIEW, marketUri).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_DOCUMENT or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+            }
             try {
                 startActivity(goToMarket)
-            } catch (e: ActivityNotFoundException) {
+            } catch (_: ActivityNotFoundException) {
                 startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=" + context.packageName)
-                    )
+                    Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=${context.packageName}".toUri())
                 )
             }
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            1 -> {
-                if (grantResults.isNotEmpty()
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    Toast.makeText(applicationContext, "Permission granted", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(applicationContext, "Permission denied", Toast.LENGTH_SHORT)
-                        .show()
-                }
-                return
-            }
-        }
-    }
-
-    companion object {
-        var instance: MainActivity? = null
-    }
-
-    init {
-        instance = this@MainActivity
+    override fun onDestroy() {
+        super.onDestroy()
+        alertDialog?.dismiss()
+        alertDialog = null
     }
 }

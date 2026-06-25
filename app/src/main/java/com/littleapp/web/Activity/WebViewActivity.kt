@@ -3,6 +3,8 @@ package com.littleapp.web.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.littleapp.web.Unit.DATA
 import com.littleapp.web.Unit.THEME
@@ -10,30 +12,46 @@ import com.littleapp.web.databinding.ActivityWebViewBinding
 
 class WebViewActivity : AppCompatActivity() {
 
-    private var binding: ActivityWebViewBinding? = null
-    var webName: String? = null
-    var context: Context = this@WebViewActivity
+    private lateinit var binding: ActivityWebViewBinding
+    private val context: Context = this
+    private var webName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
         binding = ActivityWebViewBinding.inflate(layoutInflater)
-        val view = binding!!.root
-        setContentView(view)
+        setContentView(binding.root)
 
-        val data = intent
-        webName = data.getStringExtra(DATA.WEB_NAME)
+        webName = intent.getStringExtra(DATA.WEB_NAME)
 
-        binding!!.webView.settings.loadsImagesAutomatically = true
-        binding!!.webView.settings.javaScriptEnabled = true
-        binding!!.webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+        binding.webView.apply {
+            webViewClient = WebViewClient()
+            scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
 
-        when (webName) {
-            DATA.WEBSITE -> binding!!.webView.loadUrl(DATA.mySite)
-            DATA.INSTAGRAM -> binding!!.webView.loadUrl(DATA.myInstagram)
-            DATA.FACEBOOK -> binding!!.webView.loadUrl(DATA.myFacebook)
-            DATA.TWITTER -> binding!!.webView.loadUrl(DATA.myTwitter)
-            else -> binding!!.webView.loadUrl(DATA.mySite)
+            settings.apply {
+                loadsImagesAutomatically = true
+                javaScriptEnabled = false
+            }
+
+            val urlToLoad = when (webName) {
+                DATA.WEBSITE -> DATA.mySite
+                DATA.INSTAGRAM -> DATA.myInstagram
+                DATA.FACEBOOK -> DATA.myFacebook
+                DATA.TWITTER -> DATA.myTwitter
+                else -> DATA.mySite
+            }
+            loadUrl(urlToLoad)
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.webView.canGoBack()) {
+                    binding.webView.goBack()
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
     }
 }
