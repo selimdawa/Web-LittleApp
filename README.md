@@ -1,9 +1,10 @@
-<h1 align="center">Web - Little App</h1>
+﻿<h1 align="center">Web - Little App</h1>
 
 <p align="center">
  <a><img alt="Min SDK" src="https://img.shields.io/badge/Min SDK-24-020290?logo=android&logoColor=white"/></a>
  <a><img alt="Target SDK" src="https://img.shields.io/badge/Target SDK-37-0EB265?logo=android&logoColor=0EB265"/></a>
  <a href="https://kotlinlang.org"><img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.4.0-blue?logo=kotlin&logoColor=white"/></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square"/></a>
 </p>
 
 ## Day Mode
@@ -17,3 +18,10 @@ One | Two | Three
 ![](https://blogger.googleusercontent.com/img/a/AVvXsEhCKGPZVVdY73xcYRqX4BszPHwciN4QnV11AlAbgaKSVj6c2T7XwKNw6SdRi5N5h7rgZgtzyU-2mlYzrm_Tla0pdbTTe-wBaIlKpFAd-CuscdCqOr4XgoZ6KQEODFBsznukOHTI4c9zv9HvJ0cynF2jJOFt0i1mHPr_KasxJieIYOYrzHTtSCrWGcOuXg) | ![](https://blogger.googleusercontent.com/img/a/AVvXsEh6bOUmuqe5U3QCYONToJi4uMAQSPEgkFBrJv1iBMAxxfqJBKlFPHkCZ_z39--yHsQYjaPjSAE88G7EWxqxlMTuFwERcpbaga4hE8811l4nAWdvSSqaR8II8k6dBsSDowbIDfmQ2qb4O4RErMZe5M3rRV-oGYvuvIfCUd3GjrF1GFX-GJkXMGaaOPxpHw) | ![](https://blogger.googleusercontent.com/img/a/AVvXsEjeCpg-BijgIHSunYAKbmx0BhF_Q1xM6TIyHPGjTjq9ruxE1evKekM-tdsVkU6gVaa5hz1ExhvAXIfQITp9stW0zagd0Ipo67jZwmi5LBhr0YOp2fF6fiY5RxoYw27QJ3HFKe3IS29V9dFPUW6MBtsJPVUfNnFQNlP95ApgVfxGHgpaEaev0GPlCUQMpQ) | 
 
 - [Simple Multi Apps - Kotlin](https://github.com/selimdawa/SimpleMultiAppsKotlin/)
+
+
+---
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
