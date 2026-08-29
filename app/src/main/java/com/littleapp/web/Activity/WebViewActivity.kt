@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebViewClient
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.littleapp.web.Unit.DATA
 import com.littleapp.web.Unit.THEME
 import com.littleapp.web.databinding.ActivityWebViewBinding
@@ -17,10 +20,17 @@ class WebViewActivity : AppCompatActivity() {
     private var webName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         THEME.setThemeOfApp(context)
         super.onCreate(savedInstanceState)
         binding = ActivityWebViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         webName = intent.getStringExtra(DATA.WEB_NAME)
 

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorOnBackground"
@@ -12,7 +13,7 @@
         layout="@layout/toolbar_name" />
 
     <LinearLayout
-        android:id="@+id/main"
+        android:id="@+id/content_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -274,7 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_facebook"
-                    app:tint="?tickColor" />
+                    app:tint="?trackColor" />
 
             </LinearLayout>
 
@@ -290,7 +291,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_instagram"
-                    app:tint="?tickColor" />
+                    app:tint="?trackColor" />
             </LinearLayout>
 
             <LinearLayout
@@ -304,7 +305,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_twitter"
-                    app:tint="?tickColor" />
+                    app:tint="?trackColor" />
 
             </LinearLayout>
 
