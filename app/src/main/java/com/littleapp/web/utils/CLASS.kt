@@ -1,6 +1,6 @@
-package com.littleapp.web.Unit
+package com.littleapp.web.utils
 
-import com.littleapp.web.Activity.*
+import com.littleapp.web.activity.*
 
 object CLASS {
     val MAIN: Class<*> = MainActivity::class.java

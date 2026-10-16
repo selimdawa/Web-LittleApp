@@ -1,28 +1,23 @@
-package com.littleapp.web.Activity
+package com.littleapp.web.activity
 
-import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.littleapp.web.Unit.CLASS
-import com.littleapp.web.Unit.VOID
 import com.littleapp.web.R
-import com.littleapp.web.Unit.DATA
-import com.littleapp.web.Unit.THEME
+import com.littleapp.web.utils.CLASS
+import com.littleapp.web.utils.DATA
+import com.littleapp.web.utils.THEME
+import com.littleapp.web.utils.VOID
 import com.littleapp.web.databinding.ActivityMainBinding
 import com.littleapp.web.databinding.ItemWebCardBinding
 
@@ -31,16 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val context: Context = this
     private var alertDialog: AlertDialog? = null
-
-    private val callPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            Toast.makeText(applicationContext, "Permission granted", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(applicationContext, "Permission denied", Toast.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -56,10 +41,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.toolbar.nameSpace.setText(R.string.web_app)
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            callPermissionLauncher.launch(Manifest.permission.CALL_PHONE)
-        }
 
         binding.webSite.setOnClickListener {
             VOID.IntentExtra(context, CLASS.WEB_VIEW, DATA.WEB_NAME, DATA.WEBSITE)
@@ -85,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
             alertDialog = dialogBuilder.create().apply {
                 dialogBinding.close.setOnClickListener { dismiss() }
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
                 show()
             }
         }
@@ -100,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
             alertDialog = dialogBuilder.create().apply {
                 dialogBinding.close.setOnClickListener { dismiss() }
-                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
 
                 dialogBinding.email.setOnClickListener {
                     val emailSelectorIntent = Intent(Intent.ACTION_SENDTO).apply {
@@ -115,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 dialogBinding.phone.setOnClickListener {
-                    Intent(Intent.ACTION_CALL).apply {
+                    Intent(Intent.ACTION_DIAL).apply {
                         data = "tel:${DATA.myMobileNumber}".toUri()
                         startActivity(this)
                     }
@@ -128,7 +109,10 @@ class MainActivity : AppCompatActivity() {
             Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-                putExtra(Intent.EXTRA_TEXT, "Share App with\nhttps://play.google.com/store/apps/details?id=${context.packageName}")
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Share App with\nhttps://play.google.com/store/apps/details?id=${context.packageName}"
+                )
                 startActivity(Intent.createChooser(this, "Share link!"))
             }
         }
@@ -142,7 +126,10 @@ class MainActivity : AppCompatActivity() {
                 startActivity(goToMarket)
             } catch (_: ActivityNotFoundException) {
                 startActivity(
-                    Intent(Intent.ACTION_VIEW, "https://play.google.com/store/apps/details?id=${context.packageName}".toUri())
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        "https://play.google.com/store/apps/details?id=${context.packageName}".toUri()
+                    )
                 )
             }
         }
